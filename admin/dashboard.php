@@ -93,6 +93,26 @@ tr:nth-child(even) {
     cursor: pointer;
     font-weight: bold;
 }
+    .modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+}
+.delete {
+    color: red;
+    cursor: pointer;
+}
 </style>
 
 <script>
@@ -103,6 +123,20 @@ function showQR(url) {
 }
 function closeModal() {
     document.getElementById("modal").style.display = "none";
+}
+let deleteId = null;
+
+function confirmDelete(id) {
+    deleteId = id;
+    document.getElementById("deleteModal").style.display = "flex";
+}
+
+function closeDelete() {
+    document.getElementById("deleteModal").style.display = "none";
+}
+
+function proceedDelete() {
+    window.location.href = "delete_certificate.php?id=" + deleteId;
 }
 </script>
 
@@ -146,7 +180,9 @@ View QR
 </span>
 </td>
 <td>
-<a class="delete" href="delete_certificate.php?id=<?php echo $row['id']; ?>">Delete</a>
+<span class="delete" onclick="confirmDelete(<?php echo $row['id']; ?>)">
+Delete
+</span>
 </td>
 </tr>
 <?php } ?>
@@ -162,6 +198,16 @@ View QR
 <img id="qrImage" src="" alt="QR Code">
 </div>
 </div>
-
+<!-- Delete Confirmation Modal -->
+<div class="modal" id="deleteModal">
+    <div class="modal-content">
+        <h3>Are you sure?</h3>
+        <p>This action cannot be undone.</p>
+        <div style="margin-top:20px;">
+            <button onclick="proceedDelete()" style="background:#e74c3c;color:white;padding:8px 15px;border:none;border-radius:5px;">Yes, Delete</button>
+            <button onclick="closeDelete()" style="background:#3498db;color:white;padding:8px 15px;border:none;border-radius:5px;">Cancel</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
