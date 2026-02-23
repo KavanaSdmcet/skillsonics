@@ -1,30 +1,54 @@
 <?php
 session_start();
-if(!isset($_SESSION['admin'])){
-header("Location: login.php");
+if (!isset($_SESSION['admin'])) {
+    header("Location: login.php");
+    exit();
 }
-include '../config.php';
-$result = $conn->query("SELECT * FROM certificates");
+
+include("../config.php");
+
+$result = $conn->query("SELECT * FROM certificates ORDER BY id DESC");
 ?>
-<h2>Certificates Dashboard</h2>
-<table border="1" cellpadding="10">
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="container">
+<h2>Certificate Database</h2>
+
+<a href="add_certificate.php" class="btn">+ Add Certificate</a>
+<a href="logout.php" class="btn red">Logout</a>
+
+<table>
 <tr>
-<th>Certificate ID</th>
+<th>ID</th>
 <th>Name</th>
+<th>Certificate ID</th>
 <th>Course</th>
-<th>Issue Date</th>
-<th>Status</th>
+<th>Date</th>
+<th>Action</th>
 </tr>
-<?php
-while($row=$result->fetch_assoc()){
-echo "<tr>
-<td>".$row['certificate_id']."</td>
-<td>".$row['candidate_name']."</td>
-<td>".$row['course']."</td>
-<td>".$row['issue_date']."</td>
-<td>".$row['status']."</td>
-</tr>";
-}
-?>
+
+<?php while($row = $result->fetch_assoc()) { ?>
+<tr>
+<td><?php echo $row['id']; ?></td>
+<td><?php echo $row['name']; ?></td>
+<td><?php echo $row['certificate_id']; ?></td>
+<td><?php echo $row['course']; ?></td>
+<td><?php echo $row['issue_date']; ?></td>
+<td>
+<a href="delete_certificate.php?id=<?php echo $row['id']; ?>" class="delete">Delete</a>
+</td>
+</tr>
+<?php } ?>
+
 </table>
-<br><a href="logout.php">Logout</a>
+</div>
+
+</body>
+</html>
