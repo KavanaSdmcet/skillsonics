@@ -1,18 +1,35 @@
 <?php
 session_start();
-if($_POST){
-if($_POST['username']=="admin" && $_POST['password']=="Demo@123"){
-$_SESSION['admin']=true;
-header("Location: dashboard.php");
-}else{
-$error="Invalid login";
-}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    if ($username === "admin" && $password === "admin123") {
+        $_SESSION['admin'] = true;
+        header("Location: dashboard.php");
+        exit();
+    } else {
+        $error = "Invalid credentials";
+    }
 }
 ?>
-<form method="POST">
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Login</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="login-body">
+<div class="login-box">
 <h2>Admin Login</h2>
-<input name="username" placeholder="Username" required><br><br>
-<input name="password" type="password" placeholder="Password" required><br><br>
+<form method="POST">
+<input type="text" name="username" placeholder="Username" required>
+<input type="password" name="password" placeholder="Password" required>
 <button type="submit">Login</button>
-<?php if(isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
 </form>
+<?php if(isset($error)) echo "<p class='error'>$error</p>"; ?>
+</div>
+</body>
+</html>
