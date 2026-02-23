@@ -25,11 +25,11 @@ box-shadow:0 0 15px rgba(0,0,0,0.1);border-radius:10px;}
 if($result && $result->num_rows > 0){
 $row = $result->fetch_assoc();
 echo "<div class='valid'>✓ Certificate Verified</div>";
-echo "<p><b>Name:</b> ".$row['candidate_name']."</p>";
+echo "<p><b>Name:</b> ".$row['name']."</p>";
 echo "<p><b>Certificate ID:</b> ".$row['certificate_id']."</p>";
 echo "<p><b>Course:</b> ".$row['course']."</p>";
 echo "<p><b>Issue Date:</b> ".$row['issue_date']."</p>";
-echo "<p><b>Status:</b> ".$row['status']."</p>";
+// echo "<p><b>Status:</b> ".$row['status']."</p>";
 }else{
 echo "<div class='invalid'>Certificate Not Found</div>";
 echo "<p>This certificate may be invalid or fraudulent.</p>";
