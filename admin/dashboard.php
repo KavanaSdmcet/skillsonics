@@ -7,12 +7,14 @@ if (!isset($_SESSION['admin'])) {
 include("../config.php");
 
 $result = $conn->query("SELECT * FROM certificates ORDER BY id DESC");
+$baseURL = "https://skillsonics.onrender.com/verify.php?id=";
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
 <title>Admin Dashboard</title>
+
 <style>
 body {
     margin: 0;
@@ -26,7 +28,7 @@ body {
     text-align: center;
 }
 .container {
-    width: 90%;
+    width: 95%;
     margin: 30px auto;
 }
 .actions {
@@ -64,9 +66,47 @@ tr:nth-child(even) {
     color: red;
     text-decoration: none;
 }
+.qr-btn {
+    background: #3498db;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+.close {
+    float: right;
+    cursor: pointer;
+    font-weight: bold;
+}
 </style>
-</head>
 
+<script>
+function showQR(url) {
+    var qrURL = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(url);
+    document.getElementById("qrImage").src = qrURL;
+    document.getElementById("modal").style.display = "flex";
+}
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+}
+</script>
+
+</head>
 <body>
 
 <div class="header">
@@ -87,10 +127,13 @@ tr:nth-child(even) {
 <th>Certificate ID</th>
 <th>Course</th>
 <th>Date</th>
+<th>QR</th>
 <th>Action</th>
 </tr>
 
-<?php while($row = $result->fetch_assoc()) { ?>
+<?php while($row = $result->fetch_assoc()) { 
+    $verifyLink = $baseURL . $row['certificate_id'];
+?>
 <tr>
 <td><?php echo $row['id']; ?></td>
 <td><?php echo $row['name']; ?></td>
@@ -98,12 +141,26 @@ tr:nth-child(even) {
 <td><?php echo $row['course']; ?></td>
 <td><?php echo $row['issue_date']; ?></td>
 <td>
+<span class="qr-btn" onclick="showQR('<?php echo $verifyLink; ?>')">
+View QR
+</span>
+</td>
+<td>
 <a class="delete" href="delete_certificate.php?id=<?php echo $row['id']; ?>">Delete</a>
 </td>
 </tr>
 <?php } ?>
 
 </table>
+</div>
+
+<!-- QR Modal -->
+<div class="modal" id="modal">
+<div class="modal-content">
+<span class="close" onclick="closeModal()">X</span>
+<h3>Certificate QR Code</h3>
+<img id="qrImage" src="" alt="QR Code">
+</div>
 </div>
 
 </body>
